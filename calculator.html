@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic Calculator</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      font-family: Arial, sans-serif;
+    }
+    .calculator {
+      background: #fff;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 320px;
+    }
+    .display {
+      width: 100%;
+      height: 60px;
+      background: #222;
+      color: #0f0;
+      font-size: 2rem;
+      text-align: right;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    button {
+      padding: 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #eee;
+    }
+    .operator {
+      background: #f9a825;
+      color: white;
+    }
+    .operator:hover {
+      background: #f57f17;
+    }
+    .equal {
+      background: #4caf50;
+      color: white;
+      grid-column: span 2;
+    }
+    .equal:hover {
+      background: #388e3c;
+    }
+    .clear {
+      background: #e53935;
+      color: white;
+    }
+    .clear:hover {
+      background: #c62828;
+    }
+    .del {
+      background: #29b6f6;
+      color: white;
+    }
+    .del:hover {
+      background: #0288d1;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div id="display" class="display">0</div>
+    <div class="keys">
+      <button class="clear">C</button>
+      <button class="del">⌫</button>
+      <button class="operator">/</button>
+      <button class="operator">*</button>
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button class="operator">-</button>
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button class="operator">+</button>
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button class="equal">=</button>
+      <button>0</button>
+      <button>.</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+    const buttons = document.querySelectorAll("button");
+    let currentInput = "";
+    let resultDisplayed = false;
+
+    function updateDisplay(value) {
+      display.textContent = value || "0";
+    }
+
+    function calculate() {
+      try {
+        return eval(currentInput);
+      } catch {
+        return "Error";
+      }
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const value = button.textContent;
+
+        if (value === "C") {
+          currentInput = "";
+          updateDisplay("0");
+        } else if (value === "⌫") {
+          currentInput = currentInput.slice(0, -1);
+          updateDisplay(currentInput);
+        } else if (value === "=") {
+          const result = calculate();
+          updateDisplay(result);
+          currentInput = result.toString();
+          resultDisplayed = true;
+        } else {
+          if (resultDisplayed && !isNaN(value)) {
+            currentInput = value;
+            resultDisplayed = false;
+          } else {
+            currentInput += value;
+          }
+          updateDisplay(currentInput);
+        }
+      });
+    });
+
+    // Keyboard support
+    document.addEventListener("keydown", (e) => {
+      if ((e.key >= "0" && e.key <= "9") || ["+", "-", "*", "/", "."].includes(e.key)) {
+        currentInput += e.key;
+        updateDisplay(currentInput);
+      } else if (e.key === "Enter") {
+        const result = calculate();
+        updateDisplay(result);
+        currentInput = result.toString();
+        resultDisplayed = true;
+      } else if (e.key === "Backspace") {
+        currentInput = currentInput.slice(0, -1);
+        updateDisplay(currentInput);
+      } else if (e.key === "Escape") {
+        currentInput = "";
+        updateDisplay("0");
+      }
+    });
+  </script>
+</body>
+</html>
